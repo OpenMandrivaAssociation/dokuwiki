@@ -19,7 +19,6 @@ Requires(postun):	rpm-helper >= 0.16
 BuildRequires:	rpm-helper >= 0.16
 BuildRequires:	rpm-mandriva-setup >= 1.23
 BuildArch:  noarch
-BuildRoot:  %{_tmppath}/%{name}-%{version}
 
 %description
 DokuWiki is a standards compliant, simple to use Wiki, mainly aimed at creating
