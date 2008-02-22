@@ -1,7 +1,7 @@
 %define name    dokuwiki
 %define version 20070626b
 %define up_version	2007-06-26b
-%define release %mkrel 1
+%define release %mkrel 2
 
 Name:       %{name}
 Version:    %{version}
@@ -46,10 +46,10 @@ install -d -m 755 %{buildroot}%{_datadir}/%{name}
 cp -pr bin %{buildroot}%{_datadir}/%{name}
 cp -pr inc %{buildroot}%{_datadir}/%{name}
 
-find lib -type f -regex '.*\.\(php\|ini\|js\|txt\)' | \
+find lib -type f -regex '.*\.\(php\|ini\|js\|txt\|css\)' | \
     tar --create --files-from - --remove-files | \
     (cd %{buildroot}%{_datadir}/%{name} && tar --preserve --extract)
-find lib -type f -not -regex '.*\.\(php\|ini\|js\|txt\)' | \
+find lib -type f -not -regex '.*\.\(php\|ini\|js\|txt\|css\)' | \
     tar --create --files-from - --remove-files | \
     (cd %{buildroot}%{_var}/www/%{name} && tar --preserve --extract)
 mv %{buildroot}%{_datadir}/%{name}/lib/exe %{buildroot}%{_var}/www/%{name}/lib
