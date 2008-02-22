@@ -1,6 +1,6 @@
 %define name    dokuwiki
-%define version 20061106
-%define up_version	2006-11-06
+%define version 20070626b
+%define up_version	2007-06-26b
 %define release %mkrel 1
 
 Name:       %{name}
@@ -10,8 +10,8 @@ Summary:    A wiki with plain text files backend
 License:    GPL 
 Group:	    Networking/WWW
 Url:        http://wiki.splitbrain.org/wiki:dokuwiki 
-Source:     http://www.splitbrain.org/_media/projects/dokuwiki/%{name}-%{up_version}.tar.bz2
-Patch:      %{name}-%{version}-fhs.patch
+Source:     http://www.splitbrain.org/_media/projects/dokuwiki/%{name}-%{up_version}.tgz
+Patch:      %{name}-20070626b-fhs.patch
 Requires:   mod_php
 # webapp macros and scriptlets
 Requires(post):		rpm-helper >= 0.16
@@ -46,10 +46,10 @@ install -d -m 755 %{buildroot}%{_datadir}/%{name}
 cp -pr bin %{buildroot}%{_datadir}/%{name}
 cp -pr inc %{buildroot}%{_datadir}/%{name}
 
-find lib -type f -regex '.*\.\(php\|ini\|js\|txt\|css\)' | \
+find lib -type f -regex '.*\.\(php\|ini\|js\|txt\)' | \
     tar --create --files-from - --remove-files | \
     (cd %{buildroot}%{_datadir}/%{name} && tar --preserve --extract)
-find lib -type f -not -regex '.*\.\(php\|ini\|js\|txt\|css\)' | \
+find lib -type f -not -regex '.*\.\(php\|ini\|js\|txt\)' | \
     tar --create --files-from - --remove-files | \
     (cd %{buildroot}%{_var}/www/%{name} && tar --preserve --extract)
 mv %{buildroot}%{_datadir}/%{name}/lib/exe %{buildroot}%{_var}/www/%{name}/lib
