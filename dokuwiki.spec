@@ -54,8 +54,8 @@ find lib -type f -not -regex '.*\.\(php\|ini\|js\|txt\|css\)' | \
     (cd %{buildroot}%{_var}/www/%{name} && tar --preserve --extract)
 mv %{buildroot}%{_datadir}/%{name}/lib/exe %{buildroot}%{_var}/www/%{name}/lib
 
-install -d -m 755 %{buildroot}%{_localstatedir}
-cp -pr data %{buildroot}%{_localstatedir}/%{name}
+install -d -m 755 %{buildroot}%{_localstatedir}/lib
+cp -pr data %{buildroot}%{_localstatedir}/lib/%{name}
 
 install -d -m 755 %{buildroot}%{_sysconfdir}
 cp -pr conf %{buildroot}%{_sysconfdir}/%{name}
@@ -81,7 +81,7 @@ setup
 -----
 The setup used here differs from default one, to achieve better FHS compliance.
 - the files accessibles from the web are in %{_var}/www/%{name}
-- the variable files are in %{_localstatedir}/%{name}
+- the variable files are in %{_localstatedir}/lib/%{name}
 - the non-variable files are in %{_datadir}/%{name}
 - the configuration files are in %{_sysconfdir}/%{name}
 EOF
@@ -92,9 +92,9 @@ rm -rf %{buildroot}
 %pre
 if [ $1 = "2" ]; then
     # fix for old setup
-    if [ -d %{_localstatedir}/%{name}/data ]; then
-        mv %{_localstatedir}/%{name}/data/* %{_localstatedir}/%{name}
-        rmdir %{_localstatedir}/%{name}/data
+    if [ -d %{_localstatedir}/lib/%{name}/data ]; then
+        mv %{_localstatedir}/lib/%{name}/data/* %{_localstatedir}/lib/%{name}
+        rmdir %{_localstatedir}/lib/%{name}/data
     fi
 fi
 
@@ -111,6 +111,6 @@ fi
 %config(noreplace) %{_sysconfdir}/%{name}
 %{_var}/www/%{name}
 %{_datadir}/%{name}
-%attr(-,apache,apache) %{_localstatedir}/%{name}
+%attr(-,apache,apache) %{_localstatedir}/lib/%{name}
 
 
