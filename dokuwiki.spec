@@ -1,7 +1,9 @@
 %define name    dokuwiki
-%define version 20070626b
-%define up_version	2007-06-26b
-%define release %mkrel 2
+%define version 20080505
+%define up_version	2008-05-05
+%define release %mkrel 1
+
+%define _localstatedir %_var
 
 Name:       %{name}
 Version:    %{version}
@@ -11,7 +13,6 @@ License:    GPL
 Group:	    Networking/WWW
 Url:        http://wiki.splitbrain.org/wiki:dokuwiki 
 Source:     http://www.splitbrain.org/_media/projects/dokuwiki/%{name}-%{up_version}.tgz
-Patch:      %{name}-20070626b-fhs.patch
 Requires:   mod_php
 # webapp macros and scriptlets
 Requires(post):		rpm-helper >= 0.16
@@ -30,29 +31,30 @@ texts. All data is stored in plain text files -- no database is required.
 
 %prep
 %setup -q -n %{name}-%{up_version}
-%patch0 -p1
 find . -name '.htaccess' | xargs rm -f
 
 %build
-
 
 %install
 rm -rf %{buildroot}
 
 install -d -m 755 %{buildroot}%{_var}/www/%{name}
 install -m 644 *.php %{buildroot}%{_var}/www/%{name}
+(cd %{buildroot}%{_var}/www/%{name} && ln -sf ../../..%{_datadir}/%{name}/lib .)
+
+cat > %{buildroot}%{_var}/www/%{name}/prepend.php <<'EOF'
+<?php
+define('DOKU_CONF','%{_sysconfdir}/%{name}/');
+define('DOKU_INC','%{_datadir}/%{name}/');
+EOF
 
 install -d -m 755 %{buildroot}%{_datadir}/%{name}
 cp -pr bin %{buildroot}%{_datadir}/%{name}
 cp -pr inc %{buildroot}%{_datadir}/%{name}
+cp -pr lib %{buildroot}%{_datadir}/%{name}
 
-find lib -type f -regex '.*\.\(php\|ini\|js\|txt\|css\)' | \
-    tar --create --files-from - --remove-files | \
-    (cd %{buildroot}%{_datadir}/%{name} && tar --preserve --extract)
-find lib -type f -not -regex '.*\.\(php\|ini\|js\|txt\|css\)' | \
-    tar --create --files-from - --remove-files | \
-    (cd %{buildroot}%{_var}/www/%{name} && tar --preserve --extract)
-mv %{buildroot}%{_datadir}/%{name}/lib/exe %{buildroot}%{_var}/www/%{name}/lib
+install -d -m 755 %{buildroot}%{_localstatedir}/lib
+cp -pr data %{buildroot}%{_localstatedir}/lib/%{name}
 
 install -d -m 755 %{buildroot}%{_localstatedir}/lib
 cp -pr data %{buildroot}%{_localstatedir}/lib/%{name}
@@ -60,6 +62,7 @@ cp -pr data %{buildroot}%{_localstatedir}/lib/%{name}
 install -d -m 755 %{buildroot}%{_sysconfdir}
 cp -pr conf %{buildroot}%{_sysconfdir}/%{name}
 rm -f %{buildroot}%{_sysconfdir}/%{name}/*.{dist,example}
+perl -pi -e 's|./data|%{_localstatedir}/lib/%{name}|' %{buildroot}%{_sysconfdir}/%{name}/dokuwiki.php
 
 # apache configuration
 install -d -m 755 %{buildroot}%{_webappconfdir}
@@ -69,8 +72,9 @@ Alias /%{name} %{_var}/www/%{name}
 
 <Directory %{_var}/www/%{name}>
     Allow from all
+    Options FollowSymLinks
     DirectoryIndex doku.php
-    DirectorySlash On 
+    php_value auto_prepend_file %{_var}/www/%{name}/prepend.php
 </Directory>
 EOF
 
@@ -79,7 +83,9 @@ Mandriva RPM specific notes
 
 setup
 -----
-The setup used here differs from default one, to achieve better FHS compliance.
+The setup used here differs from default one, to achieve better FHS compliance, and
+follow upstream security recommandations detailed at
+http://wiki.splitbrain.org/wiki:security:
 - the files accessibles from the web are in %{_var}/www/%{name}
 - the variable files are in %{_localstatedir}/lib/%{name}
 - the non-variable files are in %{_datadir}/%{name}
@@ -96,13 +102,28 @@ if [ $1 = "2" ]; then
         mv %{_localstatedir}/lib/%{name}/data/* %{_localstatedir}/lib/%{name}
         rmdir %{_localstatedir}/lib/%{name}/data
     fi
+    if [ -d %{_localstatedir}/www/%{name}/lib -a ! -L %{_localstatedir}/www/%{name}/lib ]; then
+        mv %{_localstatedir}/www/%{name}/lib %{_localstatedir}/www/%{name}/lib.old
+        # this is utterly ugly, but needed because if the symlink exist 
+        # before old package get removed
+        touch /tmp/need_symlink_after_old_package_removal
+    fi
 fi
 
 %post
+if [ -f /tmp/need_symlink_after_old_package_removal ]; then
+    rm -f %{_localstatedir}/www/%{name}/lib
+fi
 %_post_webapp
 
 %postun
 %_postun_webapp
+
+%posttrans
+if [ -f /tmp/need_symlink_after_old_package_removal ]; then
+    (cd %{_var}/www/%{name} && ln -sf ../../..%{_datadir}/%{name}/lib .)
+    rm -f /tmp/need_symlink_after_old_package_removal
+fi
 
 %files
 %defattr(-,root,root)
@@ -112,5 +133,3 @@ fi
 %{_var}/www/%{name}
 %{_datadir}/%{name}
 %attr(-,apache,apache) %{_localstatedir}/lib/%{name}
-
-
