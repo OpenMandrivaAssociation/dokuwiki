@@ -56,9 +56,6 @@ cp -pr lib %{buildroot}%{_datadir}/%{name}
 install -d -m 755 %{buildroot}%{_localstatedir}/lib
 cp -pr data %{buildroot}%{_localstatedir}/lib/%{name}
 
-install -d -m 755 %{buildroot}%{_localstatedir}/lib
-cp -pr data %{buildroot}%{_localstatedir}/lib/%{name}
-
 install -d -m 755 %{buildroot}%{_sysconfdir}
 cp -pr conf %{buildroot}%{_sysconfdir}/%{name}
 rm -f %{buildroot}%{_sysconfdir}/%{name}/*.{dist,example}
@@ -95,6 +92,18 @@ EOF
 %clean
 rm -rf %{buildroot}
 
+%pretrans
+# fix for old lib setup
+if [ -d %{_localstatedir}/www/%{name}/lib -a ! -L %{_localstatedir}/www/%{name}/lib ]; then
+    cd %{_localstatedir}/www/%{name}
+    find lib -type f | \
+        tar --create --files-from - --remove-files | \
+        (cd %{_datadir}/%{name} && tar --preserve --extract)
+    rm -rf lib
+    ln -sf ../../..%{_datadir}/%{name}/lib lib
+fi
+
+
 %pre
 if [ $1 = "2" ]; then
     # fix for old setup
@@ -102,28 +111,13 @@ if [ $1 = "2" ]; then
         mv %{_localstatedir}/lib/%{name}/data/* %{_localstatedir}/lib/%{name}
         rmdir %{_localstatedir}/lib/%{name}/data
     fi
-    if [ -d %{_localstatedir}/www/%{name}/lib -a ! -L %{_localstatedir}/www/%{name}/lib ]; then
-        mv %{_localstatedir}/www/%{name}/lib %{_localstatedir}/www/%{name}/lib.old
-        # this is utterly ugly, but needed because if the symlink exist 
-        # before old package get removed
-        touch /tmp/need_symlink_after_old_package_removal
-    fi
 fi
 
 %post
-if [ -f /tmp/need_symlink_after_old_package_removal ]; then
-    rm -f %{_localstatedir}/www/%{name}/lib
-fi
 %_post_webapp
 
 %postun
 %_postun_webapp
-
-%posttrans
-if [ -f /tmp/need_symlink_after_old_package_removal ]; then
-    (cd %{_var}/www/%{name} && ln -sf ../../..%{_datadir}/%{name}/lib .)
-    rm -f /tmp/need_symlink_after_old_package_removal
-fi
 
 %files
 %defattr(-,root,root)
