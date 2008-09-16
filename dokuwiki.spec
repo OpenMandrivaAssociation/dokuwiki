@@ -1,7 +1,7 @@
 %define name    dokuwiki
 %define version 20080505
 %define up_version	2008-05-05
-%define release %mkrel 1
+%define release %mkrel 2
 
 %define _localstatedir %_var
 
@@ -14,6 +14,7 @@ Group:	    Networking/WWW
 Url:        http://wiki.splitbrain.org/wiki:dokuwiki 
 Source:     http://www.splitbrain.org/_media/projects/dokuwiki/%{name}-%{up_version}.tgz
 Requires:   mod_php
+Requires:   php-xml
 # webapp macros and scriptlets
 Requires(post):		rpm-helper >= 0.16
 Requires(postun):	rpm-helper >= 0.16
