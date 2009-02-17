@@ -1,7 +1,7 @@
 %define name    dokuwiki
-%define version 20080505
-%define up_version	2008-05-05
-%define release %mkrel 2
+%define version 20090214
+%define up_version  2009-02-14
+%define release %mkrel 1
 
 %define _localstatedir %_var
 
@@ -9,17 +9,17 @@ Name:       %{name}
 Version:    %{version}
 Release:    %{release}
 Summary:    A wiki with plain text files backend
-License:    GPL 
-Group:	    Networking/WWW
+License:    GPLv2
+Group:      Networking/WWW
 Url:        http://wiki.splitbrain.org/wiki:dokuwiki 
-Source:     http://www.splitbrain.org/_media/projects/dokuwiki/%{name}-%{up_version}.tgz
+Source:     http://www.splitbrain.org/_media/projects/dokuwiki/%{name}-%{up_version}.tar.bz2
 Requires:   mod_php
 Requires:   php-xml
 # webapp macros and scriptlets
-Requires(post):		rpm-helper >= 0.16
-Requires(postun):	rpm-helper >= 0.16
-BuildRequires:	rpm-helper >= 0.16
-BuildRequires:	rpm-mandriva-setup >= 1.23
+Requires(post):     rpm-helper >= 0.16
+Requires(postun):   rpm-helper >= 0.16
+BuildRequires:  rpm-helper >= 0.16
+BuildRequires:  rpm-mandriva-setup >= 1.23
 BuildArch:  noarch
 BuildRoot:  %{_tmppath}/%{name}-%{version}
 
@@ -51,6 +51,7 @@ EOF
 
 install -d -m 755 %{buildroot}%{_datadir}/%{name}
 cp -pr bin %{buildroot}%{_datadir}/%{name}
+chmod +x %{buildroot}%{_datadir}/%{name}/bin/*
 cp -pr inc %{buildroot}%{_datadir}/%{name}
 cp -pr lib %{buildroot}%{_datadir}/%{name}
 
