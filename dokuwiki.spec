@@ -1,7 +1,8 @@
 %define name    dokuwiki
 %define version 20090214
-%define up_version  2009-02-14
-%define release %mkrel 1
+%define up_version  2009-02-14b
+%define dir_version  2009-02-14
+%define release %mkrel 2
 
 %define _localstatedir %_var
 
@@ -13,6 +14,7 @@ License:    GPLv2
 Group:      Networking/WWW
 Url:        http://wiki.splitbrain.org/wiki:dokuwiki 
 Source:     http://www.splitbrain.org/_media/projects/dokuwiki/%{name}-%{up_version}.tar.bz2
+Patch0:		%{name}-installphp.patch.bz2
 Requires:   mod_php
 Requires:   php-xml
 # webapp macros and scriptlets
@@ -31,7 +33,8 @@ datafiles remain readable outside the Wiki and eases the creation of structured
 texts. All data is stored in plain text files -- no database is required.
 
 %prep
-%setup -q -n %{name}-%{up_version}
+%setup -q -n %{name}-%{dir_version}
+%patch0
 find . -name '.htaccess' | xargs rm -f
 
 %build
@@ -46,7 +49,9 @@ install -m 644 *.php %{buildroot}%{_var}/www/%{name}
 cat > %{buildroot}%{_var}/www/%{name}/prepend.php <<'EOF'
 <?php
 define('DOKU_CONF','%{_sysconfdir}/%{name}/');
+define('DOKU_LOCAL','%{_sysconfdir}/%{name}/');
 define('DOKU_INC','%{_datadir}/%{name}/');
+define('DOKU_DATA','%{_localstatedir}/lib/%{name}/');
 EOF
 
 install -d -m 755 %{buildroot}%{_datadir}/%{name}
@@ -62,6 +67,7 @@ install -d -m 755 %{buildroot}%{_sysconfdir}
 cp -pr conf %{buildroot}%{_sysconfdir}/%{name}
 rm -f %{buildroot}%{_sysconfdir}/%{name}/*.{dist,example}
 perl -pi -e 's|./data|%{_localstatedir}/lib/%{name}|' %{buildroot}%{_sysconfdir}/%{name}/dokuwiki.php
+
 
 # apache configuration
 install -d -m 755 %{buildroot}%{_webappconfdir}
@@ -125,7 +131,7 @@ fi
 %defattr(-,root,root)
 %doc COPYING README VERSION README.urpmi conf/*.{dist,example}
 %config(noreplace) %{_webappconfdir}/%{name}.conf
-%config(noreplace) %{_sysconfdir}/%{name}
+%attr(-,apache,apache) %config(noreplace) %{_sysconfdir}/%{name}
 %{_var}/www/%{name}
 %{_datadir}/%{name}
 %attr(-,apache,apache) %{_localstatedir}/lib/%{name}
