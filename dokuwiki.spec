@@ -1,8 +1,8 @@
 %define name    dokuwiki
-%define version 20090214
-%define up_version  2009-02-14b
-%define dir_version  2009-02-14
-%define release %mkrel 2
+%define version 20091225
+%define up_version  2009-12-25c
+%define dir_version  2009-12-25
+%define release %mkrel 1
 
 %define _localstatedir %_var
 
@@ -13,7 +13,7 @@ Summary:    A wiki with plain text files backend
 License:    GPLv2
 Group:      Networking/WWW
 Url:        http://wiki.splitbrain.org/wiki:dokuwiki 
-Source:     http://www.splitbrain.org/_media/projects/dokuwiki/%{name}-%{up_version}.tar.bz2
+Source:     http://www.splitbrain.org/_media/projects/dokuwiki/%{name}-%{up_version}.tgz
 Patch0:		%{name}-installphp.patch.bz2
 Requires:   mod_php
 Requires:   php-xml
