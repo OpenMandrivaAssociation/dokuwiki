@@ -2,7 +2,7 @@
 %define version 20091225
 %define up_version  2009-12-25c
 %define dir_version  2009-12-25
-%define release %mkrel 1
+%define release %mkrel 2
 
 %define _localstatedir %_var
 
@@ -17,11 +17,10 @@ Source:     http://www.splitbrain.org/_media/projects/dokuwiki/%{name}-%{up_vers
 Patch0:		%{name}-installphp.patch.bz2
 Requires:   mod_php
 Requires:   php-xml
-# webapp macros and scriptlets
-Requires(post):     rpm-helper >= 0.16
-Requires(postun):   rpm-helper >= 0.16
-BuildRequires:  rpm-helper >= 0.16
-BuildRequires:  rpm-mandriva-setup >= 1.23
+%if %mdkversion < 201010
+Requires(post):   rpm-helper
+Requires(postun):   rpm-helper
+%endif
 BuildArch:  noarch
 BuildRoot:  %{_tmppath}/%{name}-%{version}
 
@@ -76,6 +75,7 @@ cat > %{buildroot}%{_webappconfdir}/%{name}.conf <<EOF
 Alias /%{name} %{_var}/www/%{name}
 
 <Directory %{_var}/www/%{name}>
+    Order allow,deny
     Allow from all
     Options FollowSymLinks
     DirectoryIndex doku.php
@@ -122,10 +122,14 @@ if [ $1 = "2" ]; then
 fi
 
 %post
+%if %mdkversion < 201010
 %_post_webapp
+%endif
 
 %postun
+%if %mdkversion < 201010
 %_postun_webapp
+%endif
 
 %files
 %defattr(-,root,root)
