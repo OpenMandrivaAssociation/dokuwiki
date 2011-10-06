@@ -1,10 +1,10 @@
 %define name    dokuwiki
-%define version 20091225
-%define up_version  2009-12-25c
-%define dir_version  2009-12-25
-%define release %mkrel 3
+%define version 20110525a
+%define up_version  2011-05-25a
+%define dir_version  2011-05-25a
+%define release %mkrel 1
 
-%define _localstatedir %_var
+%define _localstatedir %{_var}
 
 Name:       %{name}
 Version:    %{version}
@@ -14,7 +14,6 @@ License:    GPLv2
 Group:      Networking/WWW
 Url:        http://wiki.splitbrain.org/wiki:dokuwiki 
 Source:     http://www.splitbrain.org/_media/projects/dokuwiki/%{name}-%{up_version}.tgz
-Patch0:		%{name}-installphp.patch.bz2
 Requires:   mod_php
 Requires:   php-xml
 %if %mdkversion < 201010
@@ -33,7 +32,6 @@ texts. All data is stored in plain text files -- no database is required.
 
 %prep
 %setup -q -n %{name}-%{dir_version}
-%patch0
 find . -name '.htaccess' | xargs rm -f
 
 %build
