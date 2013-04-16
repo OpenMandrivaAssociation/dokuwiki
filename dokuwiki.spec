@@ -1,14 +1,11 @@
-%define name    dokuwiki
-%define version 20110525a
 %define up_version  2011-05-25a
 %define dir_version  2011-05-25a
-%define release: 3
 
 %define _localstatedir %{_var}
 
-Name:       %{name}
-Version:    %{version}
-Release:    %{release}
+Name:       dokuwiki
+Version:    20110525a
+Release:    3
 Summary:    A wiki with plain text files backend
 License:    GPLv2
 Group:      Networking/WWW
@@ -16,12 +13,7 @@ Url:        http://wiki.splitbrain.org/wiki:dokuwiki
 Source:     http://www.splitbrain.org/_media/projects/dokuwiki/%{name}-%{up_version}.tgz
 Requires:   mod_php
 Requires:   php-xml
-%if %mdkversion < 201010
-Requires(post):   rpm-helper
-Requires(postun):   rpm-helper
-%endif
 BuildArch:  noarch
-BuildRoot:  %{_tmppath}/%{name}-%{version}
 
 %description
 DokuWiki is a standards compliant, simple to use Wiki, mainly aimed at creating
