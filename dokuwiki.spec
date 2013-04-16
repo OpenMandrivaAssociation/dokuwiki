@@ -2,7 +2,7 @@
 %define version 20110525a
 %define up_version  2011-05-25a
 %define dir_version  2011-05-25a
-%define release %mkrel 1
+%define release: 2
 
 %define _localstatedir %{_var}
 
@@ -119,15 +119,7 @@ if [ $1 = "2" ]; then
     fi
 fi
 
-%post
-%if %mdkversion < 201010
-%_post_webapp
-%endif
 
-%postun
-%if %mdkversion < 201010
-%_postun_webapp
-%endif
 
 %files
 %defattr(-,root,root)
