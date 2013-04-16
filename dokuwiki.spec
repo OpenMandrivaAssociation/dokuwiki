@@ -2,7 +2,7 @@
 %define version 20110525a
 %define up_version  2011-05-25a
 %define dir_version  2011-05-25a
-%define release: 2
+%define release: 3
 
 %define _localstatedir %{_var}
 
