@@ -65,8 +65,7 @@ cat > %{buildroot}%{_webappconfdir}/%{name}.conf <<EOF
 Alias /%{name} %{_var}/www/%{name}
 
 <Directory %{_var}/www/%{name}>
-    Order allow,deny
-    Allow from all
+    Require all granted
     Options FollowSymLinks
     DirectoryIndex doku.php
     php_value auto_prepend_file %{_var}/www/%{name}/prepend.php
