@@ -13,6 +13,7 @@ Url:        http://wiki.splitbrain.org/wiki:dokuwiki
 Source:     http://www.splitbrain.org/_media/projects/dokuwiki/%{name}-%{up_version}.tgz
 Requires:   mod_php
 Requires:   php-xml
+Requires:   apache-mod_socache_shmcb
 BuildArch:  noarch
 
 %description
