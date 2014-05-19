@@ -2,10 +2,11 @@
 %define dir_version  2011-05-25a
 
 %define _localstatedir %{_var}
+%define __noautoreq /usr/bin/php
 
 Name:       dokuwiki
 Version:    20110525a
-Release:    5
+Release:    6
 Summary:    A wiki with plain text files backend
 License:    GPLv2
 Group:      Networking/WWW
@@ -74,7 +75,7 @@ Alias /%{name} %{_var}/www/%{name}
 EOF
 
 cat > README.urpmi <<EOF
-Mandriva RPM specific notes
+ROSA RPM specific notes
 
 setup
 -----
@@ -88,7 +89,6 @@ http://wiki.splitbrain.org/wiki:security:
 EOF
 	
 %clean
-rm -rf %{buildroot}
 
 %pretrans
 # fix for old lib setup
@@ -114,101 +114,9 @@ fi
 
 
 %files
-%defattr(-,root,root)
 %doc COPYING README VERSION README.urpmi conf/*.{dist,example}
 %config(noreplace) %{_webappconfdir}/%{name}.conf
 %attr(-,apache,apache) %config(noreplace) %{_sysconfdir}/%{name}
 %{_var}/www/%{name}
 %{_datadir}/%{name}
 %attr(-,apache,apache) %{_localstatedir}/lib/%{name}
-
-
-%changelog
-* Thu Oct 06 2011 Andrey Bondrov <abondrov@mandriva.org> 20110525a-1mdv2012.0
-+ Revision: 703319
-- New version: 20110525a
-
-* Sun Dec 05 2010 Oden Eriksson <oeriksson@mandriva.com> 20091225-3mdv2011.0
-+ Revision: 610265
-- rebuild
-
-* Mon Mar 01 2010 Guillaume Rousse <guillomovitch@mandriva.org> 20091225-2mdv2010.1
-+ Revision: 513174
-- rely on filetrigger for reloading apache configuration begining with 2010.1, rpm-helper macros otherwise
-
-* Thu Jan 21 2010 Frederik Himpe <fhimpe@mandriva.org> 20091225-1mdv2010.1
-+ Revision: 494701
-- Update to new version 2009-12-25c
-
-* Fri Oct 09 2009 Jerome Martin <jmartin@mandriva.org> 20090214-2mdv2010.0
-+ Revision: 456375
-- Updated to release 2009-02-14b for security fix for a local file inclusion issue 1700 (CVE-2009-1960)
-  Fixed installation bug #49532
-
-* Tue Feb 17 2009 Jerome Martin <jmartin@mandriva.org> 20090214-1mdv2009.1
-+ Revision: 341205
-- version 2008-02-14
-
-* Tue Sep 16 2008 Guillaume Rousse <guillomovitch@mandriva.org> 20080505-2mdv2009.0
-+ Revision: 285147
-- add php-xml dependency
-
-* Mon Jun 30 2008 Guillaume Rousse <guillomovitch@mandriva.org> 20080505-1mdv2009.0
-+ Revision: 230355
--use a nicer workaround for rpm bug (thanks Pixel)
--correct data files double inclusion
-- new version
-- workaround rpm bug when computing files list difference on upgrade (#41713)
-
-  + Pixel <pixel@mandriva.com>
-    - adapt to %%_localstatedir now being /var instead of /var/lib (#22312)
-
-* Fri Feb 22 2008 Guillaume Rousse <guillomovitch@mandriva.org> 20070626b-2mdv2008.1
-+ Revision: 173937
-- fix FHS patch
-- revert previous css location change, they are used indirectly by php code
-
-* Fri Feb 22 2008 Guillaume Rousse <guillomovitch@mandriva.org> 20070626b-1mdv2008.1
-+ Revision: 173924
-- new version
-- rediff FHS patch
-- fix css location
-
-  + Olivier Blin <blino@mandriva.org>
-    - restore BuildRoot
-
-* Mon Dec 17 2007 Thierry Vignaud <tv@mandriva.org> 20061106-1mdv2008.1
-+ Revision: 124146
-- kill re-definition of %%buildroot on Pixel's request
-
-
-* Wed Dec 13 2006 Guillaume Rousse <guillomovitch@mandriva.org> 20061106-1mdv2007.0
-+ Revision: 96213
-- handle upgrade from previous setup
-- new version
-  use a patch to enforce FHS compliance instead of symlinks
-  put all included files outside of web directory
-  put data under /var/lib/dokuwiki directly, no need for an additional empty directory
-  put sample configuration files under documentation
-  provide README.urpmi about mdv specific setup
-  cleanup spec file
-
-  + jmartin <jmartin>
-    - import dokuwiki-20060309-3mdv2007.0
-
-* Fri Jun 30 2006 Jerome Martin <jmartin@mandriva.org> 20060309-3mdv2007.0
-- Fix web directory to /var/www/dokuwiki
-
-* Fri May 12 2006 Jerome Martin <jmartin@mandriva.org> 20060309-2mdk
-- Fixed WebappsPolicy
-
-* Thu Mar 23 2006 Jerome Martin <jmartin@mandriva.org> 20060309-1mdk
-- Version 2006-03-09
-
-* Mon Feb 06 2006 Jerome Martin <jmartin@mandriva.org> 20050922-1mdk
-- New version
-
-* Sun Jul 24 2005 Michael Scherer <misc@mandriva.org> 20050713-1mdk
-- from roudoudou <roudoud0u@free.fr>
-  - Initial Mandriva rpm package
-
