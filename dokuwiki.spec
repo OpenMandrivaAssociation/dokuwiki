@@ -6,7 +6,7 @@
 
 Name:       dokuwiki
 Version:    20110525a
-Release:    6
+Release:    7
 Summary:    A wiki with plain text files backend
 License:    GPLv2
 Group:      Networking/WWW
